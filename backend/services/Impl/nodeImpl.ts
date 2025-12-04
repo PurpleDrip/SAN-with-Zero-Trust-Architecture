@@ -1,31 +1,24 @@
-import dbServices from "./dbImpl";
+import { INodeService } from "../nodeServices";
+import { IDbService } from "../dbServices";
+import { Node } from "../../models/Node";
+import { v4 as uuidv4 } from 'uuid';
 
-class nodeServices{
-    dbServices:dbServices;
+export class NodeImpl implements INodeService {
+    constructor(private dbService: IDbService) {}
 
-    constructor(){
-        this.dbServices=new dbServices();
-    } 
-    
-    getAllNodes(){
-        return this.dbServices.fetchData();
+    getAllNodes(): Node[] {
+        return this.dbService.getAllNodes();
     }
 
-    getNodeById(id:number){
-        return this.dbServices.fetchData();
-    }
-
-    addNode(node:Node){
-        return this.dbServices.addData(node);
-    }
-
-    deleteNode(id:number){
-        return this.dbServices.deleteData(id);
-    }
-
-    updateNode(id:number){
-        return this.dbServices.updateData(id);
+    createNode(ip: string): Node {
+        const newNode: Node = {
+            id: uuidv4(),
+            ip,
+            trustScore: 50, // Default starting score
+            status: 'pending',
+            stage: 'Verification'
+        };
+        this.dbService.addNode(newNode);
+        return newNode;
     }
 }
-
-export default nodeServices;

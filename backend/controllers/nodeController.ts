@@ -1,13 +1,17 @@
-import express from "express";
+import { Request, Response } from 'express';
+import { INodeService } from '../services/nodeServices';
 
+export class NodeController {
+    constructor(private nodeService: INodeService) {}
 
-const nodeController={
-    getAllNodes: (req:any,res:any)=>{
-        return res.status(200).json({message:"All nodes"})
-    },
-    getNodeById: (req:any,res:any)=>{
-        return res.status(200).json({message:"Node by id"})
-    }
+    getNodes = (req: Request, res: Response) => {
+        const nodes = this.nodeService.getAllNodes();
+        res.json(nodes);
+    };
+
+    createNode = (req: Request, res: Response) => {
+        const { ip } = req.body;
+        const newNode = this.nodeService.createNode(ip);
+        res.status(201).json(newNode);
+    };
 }
-
-export default nodeController

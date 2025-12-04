@@ -1,9 +1,8 @@
-interface dbServices{
-    fetchData():null;
-    addData(node:Node):null;
-    deleteData(id:number):null;
-    updateData(id:number):null;
-    clearData():null;
-}
+import { Node } from "../models/Node";
 
-export default dbServices;
+export interface IDbService {
+    getAllNodes(): Node[];
+    getNodeById(id: string): Node | undefined;
+    addNode(node: Node): void;
+    updateNode(node: Node): void;
+}

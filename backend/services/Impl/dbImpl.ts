@@ -1,34 +1,29 @@
-import { Low } from 'lowdb'
-import { JSONFile } from 'lowdb/node'
+import { IDbService } from "../dbServices";
+import {Node} from "../../models/Node";
 
+export class DbImpl implements IDbService {
+    // This array acts as your database
+    private nodes: Node[] = [
+        { id: "node_1", ip: "192.168.1.5", trustScore: 85, status: "active", stage: "Active Session" },
+        { id: "node_2", ip: "192.168.1.6", trustScore: 0, status: "pending", stage: "Verification" }
+    ];
 
-class dbServices{
-
-    db:Low;
-
-    constructor(){
-        this.db=new Low(new JSONFile('db.json'), { nodes: [] });
+    getAllNodes(): Node[] {
+        return this.nodes;
     }
 
-    fetchData(){
-        return this.db.read();
+    getNodeById(id: string): Node | undefined {
+        return this.nodes.find(n => n.id === id);
     }
 
-    addData(node:Node){
-        this.db.write();
+    addNode(node: Node): void {
+        this.nodes.push(node);
     }
 
-    deleteData(id:number){
-        this.db.write();
-    }
-
-    updateData(id:number){
-        this.db.write();
-    }
-
-    clearData(){
-        this.db.write();
+    updateNode(node: Node): void {
+        const index = this.nodes.findIndex(n => n.id === node.id);
+        if (index !== -1) {
+            this.nodes[index] = node;
+        }
     }
 }
-
-export default dbServices;

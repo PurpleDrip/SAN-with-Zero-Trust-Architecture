@@ -1,9 +1,6 @@
-interface nodeServices{
-    getAllNodes():null;
-    getNodeById(id:number):null;
-    addNode(node:Node):null;
-    deleteNode(id:number):null;
-    updateNode(id:number):null;
-}
+import { Node } from "../models/Node";
 
-export default nodeServices;
+export interface INodeService {
+    getAllNodes(): Node[];
+    createNode(ip: string): Node;
+}
