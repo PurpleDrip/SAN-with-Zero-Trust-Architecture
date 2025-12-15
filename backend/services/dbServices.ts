@@ -5,4 +5,5 @@ export interface IDbService {
     getNodeById(id: string): Node | undefined;
     addNode(node: Node): void;
     updateNode(node: Node): void;
+    deleteNode(id: string): boolean;
 }

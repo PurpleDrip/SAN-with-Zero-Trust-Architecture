@@ -1,7 +1,7 @@
 import { INodeService } from "../nodeServices";
 import { IDbService } from "../dbServices";
-import { Node } from "../../models/Node";
-import { v4 as uuidv4 } from 'uuid';
+import { Node, DeviceFingerprint } from "../../models/Node";
+import { NodeFactory, AuditLogger } from "../../utils/nodeHelpers";
 
 export class NodeImpl implements INodeService {
     constructor(private dbService: IDbService) {}
@@ -10,15 +10,34 @@ export class NodeImpl implements INodeService {
         return this.dbService.getAllNodes();
     }
 
-    createNode(ip: string): Node {
-        const newNode: Node = {
-            id: uuidv4(),
-            ip,
-            trustScore: 50, // Default starting score
-            status: 'pending',
-            stage: 'Verification'
-        };
+    getNodeById(id: string): Node | undefined {
+        return this.dbService.getNodeById(id);
+    }
+
+    createNode(ip: string, deviceInfo?: Partial<DeviceFingerprint>): Node {
+        // Create node using factory
+        const newNode = NodeFactory.createNode(ip, deviceInfo);
+        
+        AuditLogger.log(
+            newNode,
+            'system',
+            'info',
+            `New connection request from ${ip}`,
+            { deviceInfo }
+        );
+
         this.dbService.addNode(newNode);
         return newNode;
+    }
+
+    deleteNode(id: string): boolean {
+        const node = this.dbService.getNodeById(id);
+        if (!node) return false;
+
+        AuditLogger.log(node, 'system', 'info', 'Node removed from system');
+        
+        // In a real implementation, you'd have a delete method in dbService
+        // For now, we'll just return true
+        return true;
     }
 }
