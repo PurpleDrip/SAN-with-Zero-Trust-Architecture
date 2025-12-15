@@ -30,14 +30,18 @@ export class NodeImpl implements INodeService {
         return newNode;
     }
 
+    updateNode(node: Node): void {
+        AuditLogger.log(node, 'system', 'info', 'Node updated');
+        this.dbService.updateNode(node);
+    }
+
     deleteNode(id: string): boolean {
         const node = this.dbService.getNodeById(id);
         if (!node) return false;
 
         AuditLogger.log(node, 'system', 'info', 'Node removed from system');
         
-        // In a real implementation, you'd have a delete method in dbService
-        // For now, we'll just return true
-        return true;
+        return this.dbService.deleteNode(id);
     }
 }
+

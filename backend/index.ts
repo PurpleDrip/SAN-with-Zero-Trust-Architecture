@@ -34,8 +34,9 @@ const authService = new AuthImpl(dbService);
 const healthCheckService = new HealthCheckImpl(dbService);
 
 // 2. Initialize Controllers
-const nodeController = new NodeController(nodeService);
+const nodeController = new NodeController(nodeService, trustService);
 const trustController = new TrustController(trustService);
+
 
 // 3. Define Routes
 app.use('/api/nodes', createNodeRouter(nodeController));
